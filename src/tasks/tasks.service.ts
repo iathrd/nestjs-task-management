@@ -6,6 +6,7 @@ import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { TaskStatus } from './task-status.enum';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -14,9 +15,6 @@ export class TasksService {
         private taskRepository: TaskRepository
     ) { }
 
-    // getAllTask(): Task[] {
-    //     return this.tasks;
-    // }
 
     async getTaskByid(id: number): Promise<Task> {
         const found = await this.taskRepository.findOne(id);
@@ -28,8 +26,11 @@ export class TasksService {
         return found;
     }
 
-    async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-        return this.taskRepository.createTask(createTaskDto);
+    async createTask(
+        createTaskDto: CreateTaskDto,
+        user: User,
+    ): Promise<Task> {
+        return this.taskRepository.createTask(createTaskDto, user);
     }
 
     async deleteTaskById(id: number): Promise<void> {
@@ -51,30 +52,9 @@ export class TasksService {
         return task;
     }
 
-    async getTask(filterDto: GetTaskFilterDto): Promise<Task[]> {
-        return this.taskRepository.getTask(filterDto);
+    async getTask(filterDto: GetTaskFilterDto, user: User): Promise<Task[]> {
+        return this.taskRepository.getTask(filterDto, user);
 
     }
-    // updateTaskStatus(id: string, status: TaskStatus): Task {
-    //     const task = this.getTaskById(id);
-    //     task.status = status;
-    //     return task;
-    // }
 
-    // getTaskWithFilter(filterDto: GetTaskFilterDto): Task[] {
-    //     const { status, search } = filterDto;
-    //     let tasks = this.getAllTask()
-
-    //     if (status) {
-    //         tasks = tasks.filter(task => task.status === status);
-    //     }
-
-    //     if (search) {
-    //         tasks = tasks.filter(task =>
-    //             task.title.includes(search) ||
-    //             task.description.includes(search),
-    //         );
-    //     }
-    //     return tasks;
-    // }
 }
